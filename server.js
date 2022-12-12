@@ -1,15 +1,21 @@
-import { config } from "dotenv";
-import express from "express";
-import mongoose from "mongoose";
+require("dotenv").config();
 
-config();
+const express = require("express");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+
+// routes
+const userRoutes = require("./routes/user");
 
 const PORT = process.env.PORT || 5000;
 
+// express app
 const app = express();
 
 // middleware
 app.use(express.json());
+
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -23,6 +29,8 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use("/api/user", userRoutes);
 
 mongoose.set("strictQuery", true);
 

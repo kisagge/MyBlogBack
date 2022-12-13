@@ -63,7 +63,49 @@ const login = async (req, res) => {
   }
 };
 
+function ensureAuthorized(req, res, next) {
+  const bearerHeader = req.headers.authorization;
+  if (typeof bearerHeader !== "undefined") {
+    const bearerToken = bearerHeader.split(" ")[1];
+    req.token = bearerToken;
+    next();
+  } else {
+    res.send(403);
+  }
+}
+
+const userInfo = async (req, res) => {
+  try {
+    const user = await User.findOne({
+      token: req.token,
+    });
+
+    if (!user) {
+      return res
+        .status(403)
+        .json({ result: false, error: "Invalid user", data: null });
+    }
+
+    return res.status(200).json({
+      result: true,
+      error: null,
+      data: {
+        userId: user.userId,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    return res.status(401).json({
+      result: false,
+      error: err,
+      data: null,
+    });
+  }
+};
+
 module.exports = {
   login,
   signUp,
+  ensureAuthorized,
+  userInfo,
 };

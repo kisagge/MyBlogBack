@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 // routes
 const userRoutes = require("./routes/user");
+const skillRoutes = require("./routes/skill");
 
 const PORT = process.env.PORT || 5000;
 
@@ -31,6 +32,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user", userRoutes);
+app.use("/api/skill", skillRoutes);
 
 mongoose.set("strictQuery", true);
 
